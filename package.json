@@ -1,5 +1,5 @@
 {
-    "name": "chaincall",
+    "name": "evm-callkit",
     "version": "0.1.0",
     "description": "RPC toolkit for EVM chains with cache, retry, and rotation.",
     "main": "dist/index.js",
