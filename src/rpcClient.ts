@@ -1,22 +1,22 @@
 // src/rpcClient.ts
 import { createPublicClient, http } from 'viem';
 import { base } from 'viem/chains';
-import { getChaincallConfig } from './config';
+import { getCallkitConfig } from './config';
 
 let currentIndex = 0;
 
 export function getNextClient() {
-  const { rpcEndpoints, debug } = getChaincallConfig();
+  const { rpcEndpoints, debug } = getCallkitConfig();
 
   if (!rpcEndpoints || rpcEndpoints.length === 0) {
-    throw new Error('[chaincall] No RPC endpoints configured. Please call initChaincall({ rpcEndpoints: [...] })');
+    throw new Error('[callkit] No RPC endpoints configured. Please call initCallkit({ rpcEndpoints: [...] })');
   }
 
   const rpcUrl = rpcEndpoints[currentIndex];
   currentIndex = (currentIndex + 1) % rpcEndpoints.length;
 
   if (debug) {
-    console.debug(`[chaincall] Using RPC: ${rpcUrl}`);
+    console.debug(`[callkit] Using RPC: ${rpcUrl}`);
   }
 
   return createPublicClient({

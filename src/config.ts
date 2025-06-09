@@ -1,6 +1,6 @@
 // src/config.ts
 
-export interface ChaincallLogger {
+export interface CallkitLogger {
     debug?: (...args: any[]) => void;
     info?: (...args: any[]) => void;
     warn?: (...args: any[]) => void;
@@ -8,32 +8,32 @@ export interface ChaincallLogger {
   }
   
 
-export interface ChaincallConfig {
+export interface CallkitConfig {
     rpcEndpoints: string[];
     ttl: number;
     maxRetry: number;
     debug: boolean;
     redisUrl?: string;
-    logger?: ChaincallLogger;
+    logger?: CallkitLogger;
 }
 
-let config: ChaincallConfig = {
+let config: CallkitConfig = {
     rpcEndpoints: [],
     ttl: 30_000,
     maxRetry: 3,
     debug: false,
 };
 
-export function initChaincall(userConfig: Partial<ChaincallConfig>) {
+export function initCallkit(userConfig: Partial<CallkitConfig>) {
     config = { ...config, ...userConfig };
 }
 
-export function getChaincallConfig(): ChaincallConfig {
+export function getCallkitConfig(): CallkitConfig {
     return config;
 }
 
 // ---- Logger Factories ----
-export function createConsoleLogger(prefix = 'Chaincall'): ChaincallLogger {
+export function createConsoleLogger(prefix = 'Callkit'): CallkitLogger {
     return {
       debug: (...args) => console.debug(`[${prefix}]`, ...args),
       info: (...args) => console.info(`[${prefix}]`, ...args),

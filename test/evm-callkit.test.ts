@@ -1,6 +1,6 @@
-// test/chaincall.test.ts
+// test/evm-callkit.ts
 import { describe, it, expect, beforeAll } from 'vitest';
-import { initChaincall } from '../src/config';
+import { initCallkit } from '../src/config';
 import { readContractLive, readContractWithCache } from '../src/readContract';
 import { multicallWithCache, multicallLive } from '../src/multicall';
 import { parseAbi } from 'viem';
@@ -11,17 +11,17 @@ config();
 const poolAddress = '0xd0b53d9277642d899df5c87a3966a349a798f224'; // Uniswap v3 USDC/WETH
 
 beforeAll(() => {
-  initChaincall({
-    rpcEndpoints: process.env.CHAINCALL_RPC_ENDPOINTS!.split(','),
-    ttl: parseInt(process.env.CHAINCALL_TTL || '600', 10),
-    maxRetry: parseInt(process.env.CHAINCALL_MAX_RETRY || '3', 10),
+  initCallkit({
+    rpcEndpoints: process.env.CALLKIT_RPC_ENDPOINTS!.split(','),
+    ttl: parseInt(process.env.CALLKIT_TTL || '600', 10),
+    maxRetry: parseInt(process.env.CALLKIT_MAX_RETRY || '3', 10),
     redisUrl: process.env.REDIS_URL,
-    logger: !!parseInt(process.env.CHAINCALL_DEBUG || '0', 10) ? console : undefined,
+    logger: !!parseInt(process.env.CALLKIT_DEBUG || '0', 10) ? console : undefined,
   });
 });
 
 
-describe('chaincall readContract', () => {
+describe('evm-callkit readContract', () => {
   it('returns live token0 address without using cache', async () => {
     const token0 = await readContractLive<string>({
       address: poolAddress,
@@ -43,7 +43,7 @@ describe('chaincall readContract', () => {
   });
 });
 
-describe('chaincall multicall', () => {
+describe('evm-callkit multicall', () => {
   it('returns symbol live with multicallLive', async () => {
     const results = await multicallLive([
       {

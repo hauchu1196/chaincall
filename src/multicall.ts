@@ -1,5 +1,5 @@
 // src/multicall.ts
-import { getChaincallConfig } from './config';
+import { getCallkitConfig } from './config';
 import { getNextClient } from './rpcClient';
 import { memoryCache } from './utils/memoryCache';
 import { redisGet, redisSet } from './redis';
@@ -21,7 +21,7 @@ export async function multicallWithCache(
   client?: PublicClient,
   options?: MulticallOptions
 ): Promise<any[]> {
-  const config = getChaincallConfig();
+  const config = getCallkitConfig();
   const key = getCacheKey(contracts);
   const ttl = options?.ttl ?? config.ttl;
 

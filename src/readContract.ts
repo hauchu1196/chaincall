@@ -1,6 +1,6 @@
 // src/readContract.ts
 import { getNextClient } from './rpcClient';
-import { getChaincallConfig } from './config';
+import { getCallkitConfig } from './config';
 import { memoryCache } from './utils/memoryCache';
 import { redisGet, redisSet } from './redis';
 import { PublicClient, ReadContractParameters } from 'viem';
@@ -21,7 +21,7 @@ export async function readContractWithCache<T>(
   client?: PublicClient,
   options?: ReadContractOptions
 ): Promise<T> {
-  const config = getChaincallConfig();
+  const config = getCallkitConfig();
   const key = getCacheKey(args);
   const ttl = options?.ttl ?? config.ttl;
 

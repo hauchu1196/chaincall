@@ -1,22 +1,22 @@
 // src/redis.ts
 import { createClient, RedisClientType } from 'redis';
-import { getChaincallConfig } from './config';
+import { getCallkitConfig } from './config';
 
 let client: RedisClientType | null = null;
 
 export function getRedisClient(): RedisClientType | null {
-  const { redisUrl, debug } = getChaincallConfig();
+  const { redisUrl, debug } = getCallkitConfig();
 
   if (!redisUrl) return null;
   if (client) return client;
 
   client = createClient({ url: redisUrl });
   client.on('error', (err) => {
-    if (debug) console.warn('[chaincall] Redis error:', err);
+    if (debug) console.warn('[callkit] Redis error:', err);
     client = null;
   });
   client.connect();
-  if (debug) console.debug('[chaincall] Redis connected:', redisUrl);
+  if (debug) console.debug('[callkit] Redis connected:', redisUrl);
   return client;
 }
 

@@ -1,9 +1,9 @@
 // src/utils/logger.ts
-import { getChaincallConfig } from '../config';
+import { getCallkitConfig } from '../config';
 
 function log(...args: any[]) {
-  const config = getChaincallConfig();
-  if (config.logger?.debug) config.logger.debug('[chaincall]', ...args);
+  const config = getCallkitConfig();
+  if (config.logger?.debug) config.logger.debug('[callkit]', ...args);
 }
 
 export const logger = {
