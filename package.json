@@ -1,0 +1,43 @@
+{
+    "name": "chaincall",
+    "version": "0.1.0",
+    "description": "RPC toolkit for EVM chains with cache, retry, and rotation.",
+    "main": "dist/index.js",
+    "types": "dist/types/index.d.ts",
+    "module": "dist/index.js",
+    "exports": {
+        ".": {
+            "require": "./dist/index.js",
+            "import": "./dist/index.js",
+            "types": "./dist/types/index.d.ts"
+        }
+    },
+    "scripts": {
+        "build": "tsc --project tsconfig.build.json",
+        "dev": "tsc --watch",
+        "test": "vitest",
+        "test:coverage": "vitest run --coverage",
+        "prepublishOnly": "npm run build"
+    },
+    "keywords": [
+        "evm",
+        "rpc",
+        "cache",
+        "ethereum",
+        "viem",
+        "multicall"
+    ],
+    "author": "haucv",
+    "license": "MIT",
+    "dependencies": {
+        "lru-cache": "^10.1.0",
+        "redis": "^4.6.7",
+        "viem": "^2.31.0"
+    },
+    "devDependencies": {
+        "@types/node": "^22.15.30",
+        "dotenv": "^16.5.0",
+        "typescript": "^5.4.0",
+        "vitest": "^3.2.2"
+    }
+}
