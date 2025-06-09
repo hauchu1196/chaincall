@@ -1,140 +1,117 @@
-# Chaincall SDK
+# evm-callkit
 
-Lightweight TypeScript SDK for RPC calls with built-in caching (memory + Redis), RPC rotation, retry, and optional logging.
+A minimal RPC toolkit for EVM-based chains (Ethereum, Base, etc.) with built-in features:
 
-## ✅ Features
-
-- ⚡ Smart RPC client with auto-retry, failover, round-robin
-- 🧠 Memory + Redis caching with TTL
-- 🔁 Debounce & dedup in-flight requests
-- 🛠️ Modular logger injection (Winston, Pino, etc.)
-- 🧪 Testable & production-ready
+- ✅ LRU + Redis caching for `readContract`, `multicall`
+- 🔁 Auto RPC rotation & retry with fallback
+- 🧠 Debounce/coalesce requests to avoid duplication
+- 🧰 `readContractLive`, `multicallLive` for real-time calls
+- 📦 Simple to integrate in bots, indexers, monitoring tools
 
 ---
 
-## 📦 Installation
+## Install
+
 ```bash
-npm install chaincall
+npm install evm-callkit
 ```
 
-## 🛠️ Setup
-```ts
-import { initChaincall } from 'chaincall';
+---
 
-initChaincall({
-  rpcUrls: ['https://mainnet.base.org', 'https://...', ...],
-  redisUrl: process.env.REDIS_URL,
-  ttl: 30, // default TTL in seconds
-  logger: console, // optional custom logger
+## Quick Start
+
+```ts
+import { initCallkit, readContractWithCache } from 'evm-callkit';
+
+initCallkit({
+  rpcUrls: [
+    'https://base.blockpi.network/v1/rpc/xxx',
+    'https://base.blockpi.network/v1/rpc/yyy',
+  ],
+  ttl: 600, // 10 minutes
+  redisUrl: 'redis://localhost:6379',
+  logger: console, // Optional logger
+});
+
+const symbol = await readContractWithCache<string>({
+  address: '0x...',
+  abi: parseAbi(['function symbol() view returns (string)']),
+  functionName: 'symbol',
 });
 ```
 
 ---
 
-## 🔍 Usage
+## API
+
+### Init
+```ts
+initCallkit({
+  rpcUrls: string[],
+  ttl?: number, // in seconds
+  maxRetry?: number,
+  redisUrl?: string,
+  logger?: Console | CustomLogger,
+})
+```
 
 ### `readContractWithCache`
+Call `eth_call` with memory/redis cache and retry:
 ```ts
-import { readContractWithCache } from 'chaincall';
-
-const result = await readContractWithCache({
-  address: '0x...',
-  abi: erc20Abi,
-  functionName: 'balanceOf',
-  args: ['0xabc...']
+await readContractWithCache<string>({
+  address,
+  abi,
+  functionName,
+  args,
 });
 ```
 
-### `readContractLive` (No cache)
+### `readContractLive`
+Bypass cache and always call live:
 ```ts
-import { readContractLive } from 'chaincall';
-
-const liveResult = await readContractLive({
-  address: '0x...',
-  abi: erc20Abi,
-  functionName: 'balanceOf',
-  args: ['0xabc...']
+await readContractLive<string>({
+  address,
+  abi,
+  functionName,
+  args,
 });
 ```
-
----
 
 ### `multicallWithCache`
 ```ts
-import { multicallWithCache } from 'chaincall';
-
-const data = await multicallWithCache([
-  {
-    address: '0x...',
-    abi: erc20Abi,
-    functionName: 'symbol',
-  },
-  {
-    address: '0x...',
-    abi: erc20Abi,
-    functionName: 'decimals',
-  },
-]);
+await multicallWithCache([...contracts], client?, options?);
 ```
+Supports cache, coalescing, redis.
 
-### `multicallLive` (Bypass cache)
+### `multicallLive`
 ```ts
-import { multicallLive } from 'chaincall';
-
-const data = await multicallLive([
-  {
-    address: '0x...',
-    abi: erc20Abi,
-    functionName: 'symbol',
-  }
-]);
+await multicallLive([...contracts], rpcUrl?);
 ```
+Bypass all cache, use raw RPC.
 
 ---
 
-## ⚙️ Advanced Usage
+## Test
 
-### Override TTL per-call
-```ts
-const result = await readContractWithCache({
-  address: '0x...',
-  abi: erc20Abi,
-  functionName: 'totalSupply'
-}, undefined, { ttl: 120 }); // custom TTL = 120s
-```
-
-### Custom logger (e.g., Winston)
-```ts
-import winston from 'winston';
-
-const logger = winston.createLogger({
-  transports: [new winston.transports.Console()],
-});
-
-initChaincall({
-  rpcUrls: [...],
-  redisUrl: 'redis://localhost:6379',
-  logger,
-});
-```
-
-### Manual RPC override (per-call)
-```ts
-const result = await readContractWithCache({
-  address: '0x...',
-  abi: erc20Abi,
-  functionName: 'symbol'
-}, 'https://my-rpc.com');
-```
-
----
-
-## 🧪 Testing
 ```bash
 npm run test
 ```
 
+To customize via `.env`:
+
+```env
+REDIS_URL=redis://localhost:6379
+CALLKIT_TTL=600
+CALLKIT_MAX_RETRY=3
+CALLKIT_DEBUG=1
+CALLKIT_RPC_ENDPOINTS=https://mainnet.infura.io/v3/YOUR_INFURA_API_KEY,...
+```
+
 ---
 
-## 🔓 License
+## License
 MIT
+
+---
+
+Built by [@hauchu1196](https://github.com/hauchu1196) with ❤️
