@@ -19,6 +19,10 @@
         "test:coverage": "vitest run --coverage",
         "prepublishOnly": "npm run build"
     },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/hauchu1196/evm-callkit.git"
+    },
     "keywords": [
         "evm",
         "rpc",
