@@ -1,6 +1,6 @@
 {
     "name": "evm-callkit",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "description": "RPC toolkit for EVM chains with cache, retry, and rotation.",
     "main": "dist/index.js",
     "types": "dist/types/index.d.ts",
